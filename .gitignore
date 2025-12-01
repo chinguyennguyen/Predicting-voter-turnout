@@ -2,6 +2,10 @@
 # Project-specific ignores
 #######################################
 
+# Data
+data/synthetic_data.dta
+*.dta
+
 # Ignore everything in outputs_synthetic and subfolders
 outputs_synthetic/**
 
@@ -70,4 +74,3 @@ temp/
 
 python_scripts/local_scripts/rq3b_analyses.py
 chapter_3.tex
-*.dta
