@@ -27,7 +27,7 @@ This repository contains the code, analysis pipeline, and exported outputs for a
 | NV   | Voted in 2022 only | 318k |
 | NN   | Did not vote either year | 680k |
 
-The classes are highly imbalanced — a central methodological challenge for the project.
+The classes are highly imbalanced. This is a methodological challenge for the project.
 
 ---
 
@@ -92,22 +92,23 @@ Predicting-voter-turnout/
 │
 ├── data/
 │   ├── alla_kommuner.shp              # Sweden municipal shapefile (for RQ2)
+│   ├── municipality_code.csv          # Matching municipal code to name
+│   ├── README.md                      # README
 │   └── synthetic_data_generator.py    # Generate 10k synthetic observations
 │
 ├── python_scripts/
-│   │
 │   ├── local_scripts/                 # Local testing on synthetic data
 │   │   ├── data_summary.py            # Generate dataset statistics
 │   │   ├── feature_importance.py      # Feature importance and confusion matrix
 │   │   ├── rq1_analyses.py            # RQ1 results analysis
 │   │   ├── rq2_analyses.py            # RQ2 results analysis
-│   │   ├── rq3_analyses.py            # RQ3 results analysis
+│   │   └── rq3_analyses.py            # RQ3 results analysis
 │   │
 │   ├── mona_scripts/                  # Production scripts for MONA
 │   │   ├── config.py                  # Configuration management
 │   │   ├── data_loader.py             # Data loading & preprocessing
-        ├── mona_data_summary.py       # One-time data statistics
-│   │   ├── mona_rq1.py                # RQ1 experiments (12-14 hours runs)
+|   |   ├── mona_data_summary.py       # One-time data statistics
+│   │   ├── mona_rq1.py                # RQ1 experiments (12-14 hours to run)
 │   │   ├── mona_rq2.py                # RQ2 
 │   │   ├── mona_rq3.py                # RQ3
 │   │   ├── sampler.py                 # Sampling strategies
@@ -120,12 +121,8 @@ Predicting-voter-turnout/
 │       └── rq3.py                     # RQ3 plots & figures
 │
 ├── outputs_mona/                       # Results from MONA production runs
-│   ├── tables/                         # CSV results│   │
-│   └── plots/                         # Visualizations
-│       ├── rq1_multi_metric_panel.png
-│       ├── rq1a_comparison.png
-│       ├── rq1b_scaling.png
-│       └── rq2_predictability_map.png
+│   ├── tables/                         # CSV results
+│   └── plots/                          # Visualizations
 │
 ├── outputs_synthetic/                 # Results from local testing
 │   ├── tables/                        # CSV results (test runs)

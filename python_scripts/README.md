@@ -14,27 +14,20 @@ python_scripts/
 │   ├── feature_importance.py
 │   ├── rq1_analyses.py
 │   ├── rq2_analyses.py
-│   ├── rq3_analyses.py
-│   └── rq3b_analyses.py
+│   └── rq3_analyses.py
 │
 ├── mona_scripts/                  # Scripts executed on MONA
 │   ├── __pycache__/
-│   ├── config.py
-│   ├── data_loader.py
-│   ├── mona_data_summary.py
+│   ├── config.py                   # Shared configuration for MONA/local
+│   ├── data_loader.py              # Shared data loader for MONA/local
+│   ├── mona_data_summary.py        
 │   ├── mona_feature_importance.py
 │   ├── mona_rq1.py
 │   ├── mona_rq2.py
 │   ├── mona_rq3.py
-│   ├── sampler.py
-│   ├── trainer.py
-│   └── utils.py
-│
-├── config.py                      # Shared configuration
-├── data_loader.py                 # Shared data loader for MONA/local
-├── sampler.py                     # Shared sampler logic
-├── trainer.py                     # Shared training routines
-├── utils.py                       # Shared helper functions
+│   ├── sampler.py                  # Shared sampler logic
+│   ├── trainer.py                  # Shared training routines
+│   └── utils.py                    # Shared helper functions
 │
 └── visualisation_scripts/         # Visualization scripts (post‑MONA)
     ├── rq1.py
@@ -72,4 +65,4 @@ python_scripts/
 - `config.py`, `data_loader.py`, `sampler.py`, `trainer.py`, and `utils.py` serve as shared components across both local and MONA workflows.
 - The scripts evolve over time as analysis needs change.
 - Local and MONA versions should remain aligned to ensure smooth transitions.
-- Scripts are generated with the help of large language models (ChatGPT and Claude), guided through prompts and modular task descriptions.
+- Scripts are generated with the help of large language models (ChatGPT and Claude), guided through prompts and task descriptions.
