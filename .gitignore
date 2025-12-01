@@ -6,9 +6,6 @@
 outputs_mona/**
 !outputs_mona/.gitkeep
 
-outputs_synthetic/**
-!outputs_synthetic/.gitkeep
-
 # Ignore synthetic data file
 # Ignore everything under outputs_synthetic
 outputs_synthetic/*
@@ -64,3 +61,5 @@ temp/
 
 python_scripts/local_scripts/rq3b_analyses.py
 chapter_3.tex
+*.dta
+
