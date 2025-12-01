@@ -4,6 +4,7 @@
 
 # Ignore everything in outputs_synthetic and subfolders
 outputs_synthetic/**
+outputs_mona/**
 
 # Allow these directories to exist
 !outputs_synthetic/
