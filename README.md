@@ -165,7 +165,7 @@ Both dimensions are needed to understand municipal-level variation.
 
 ---
 
-## About the Research
+## About the Project
 
 This work forms a chapter of my PhD dissertation on political participation in Sweden.
 
