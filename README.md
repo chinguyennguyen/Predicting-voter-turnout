@@ -6,9 +6,11 @@
 
 ## Abstract
 
-Using Sweden’s population register of 7.4 million eligible voters, this project predicts voting behavior in the 2018 and 2022 municipal elections. Instead of modeling turnout in a single year, the focus is on **transitions in voting habits** across time. The analysis trains models under different sampling strategies (stratified and balanced) and varying training sizes, using baseline covariates from 2018 such as education, family composition, and personal background.
+Using Sweden's population register of 7.4 million eligible voters, this project predicts voting behavior in the 2018 and 2022 municipal elections. Instead of modeling turnout in a single year, the focus is on **transitions in voting habits** across time: who develops stable voting patterns, who never votes, who stops voting, and who starts voting.
 
-The best-performing model (stratified sampling on 4 million observations) is then used to construct a municipality-level map of voting predictability. To understand why some municipalities are more predictable than others, two initial factors are examined: **entropy of the outcome distribution** and **test sample size**. Higher entropy reduces accuracy, while larger test sizes increase it (both significant at the 5% level). Next steps include analyzing heterogeneity in covariates, studying covariate–target correlations, and augmenting the model with temporal variables—income dynamics, life events, mobility, and shifts in local context not captured by baseline characteristics.
+The analysis trains models under different sampling strategies (stratified and balanced) and varying training sizes, using baseline covariates from 2018 such as education, family composition, and personal background. The best-performing model — stratified sampling on 4 million observations - is then used to construct a municipality-level map of voting predictability. 
+
+To understand why some municipalities are more predictable than others, two initial are examined: *outcome entropy* and *sample size*. Higher entropy reduces accuracy, while larger test sizes increase it (both significant at the 5% level). Together, these factors explain *29%* of geographic variation. Next steps include analyzing feature heterogeneity, developing composite indices, and augmenting the model with temporal variables—income dynamics, life events, and residential mobility which are not captured by baseline characteristics.
 
 ## Overview
 
@@ -108,6 +110,7 @@ Predicting-voter-turnout/
 │   │   ├── config.py                  # Configuration management
 │   │   ├── data_loader.py             # Data loading & preprocessing
 |   |   ├── mona_data_summary.py       # One-time data statistics
+|   |   ├── mona_feature_importance.py # Feature importance and confusion matrix
 │   │   ├── mona_rq1.py                # RQ1 experiments (12-14 hours to run)
 │   │   ├── mona_rq2.py                # RQ2 
 │   │   ├── mona_rq3.py                # RQ3
@@ -151,7 +154,6 @@ See `main_findings.ipynb` for full details.
 
 ### **Model Extensions**
 - Temporal features (income, employment, mobility)
-- Local economic and demographic change
 - Event-based features (family transitions, moves)
 
 ### **Explanatory Modeling**

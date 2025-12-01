@@ -10,7 +10,13 @@ outputs_synthetic/**
 !outputs_synthetic/.gitkeep
 
 # Ignore synthetic data file
-data/synthetic_data.dta
+# Ignore everything under outputs_synthetic
+outputs_synthetic/*
+# But keep the .gitkeep files
+!outputs_synthetic/.gitkeep
+!outputs_synthetic/tables/.gitkeep
+!outputs_synthetic/plots/.gitkeep
+!outputs_synthetic/models/.gitkeep
 
 
 #######################################
