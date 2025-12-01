@@ -5,6 +5,13 @@
 # Ignore everything in outputs_synthetic and subfolders
 outputs_synthetic/**
 
+# MONA outputs
+outputs_mona/
+!outputs_mona/.gitkeep
+!outputs_mona/tables/.gitkeep
+!outputs_mona/plots/.gitkeep
+!outputs_mona/models/.gitkeep
+
 # Allow these directories to exist
 !outputs_synthetic/
 !outputs_synthetic/tables/
@@ -64,8 +71,3 @@ temp/
 python_scripts/local_scripts/rq3b_analyses.py
 chapter_3.tex
 *.dta
-outputs_mona/models/*
-outputs_mona/tables/*
-outputs_mona/plots/rq3_correlation_heatmap.png
-outputs_mona/plots/rq3_residuals_top_bottom.png
-outputs_mona/plots/rq3_residuals_vs_entropy.png
