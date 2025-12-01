@@ -1,276 +1,180 @@
 # Predicting Voter Turnout Transitions in Sweden
 
-**Using machine learning to understand why people change their voting habits**
-
 [![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)]()
 [![XGBoost](https://img.shields.io/badge/XGBoost-ML-orange.svg)]()
 [![Stata](https://img.shields.io/badge/Stata-Data%20Cleaning-1a5490)]()
 
+## Abstract
+
+Using Sweden’s population register of 7.4 million eligible voters, this project predicts voting behavior in the 2018 and 2022 municipal elections. Instead of modeling turnout in a single year, the focus is on **transitions in voting habits** across time. The analysis trains models under different sampling strategies (stratified and balanced) and varying training sizes, using baseline covariates from 2018 such as education, family composition, and personal background.
+
+The best-performing model (stratified sampling on 4 million observations) is then used to construct a municipality-level map of voting predictability. To understand why some municipalities are more predictable than others, two initial factors are examined: **entropy of the outcome distribution** and **test sample size**. Higher entropy reduces accuracy, while larger test sizes increase it (both significant at the 5% level). Next steps include analyzing heterogeneity in covariates, studying covariate–target correlations, and augmenting the model with temporal variables—income dynamics, life events, mobility, and shifts in local context not captured by baseline characteristics.
+
 ## Overview
 
-This project tackles a fundamental question in democratic participation: **What makes some people's voting behavior predictable while others remain unpredictable?** 
+This repository contains the code, analysis pipeline, and exported outputs for a population-level study of voting-behavior transitions in Sweden. All production models are trained inside the MONA secure environment at Statistics Sweden, while this public repository includes only non-sensitive components: scripts, configurations, visualizations, and summary results.
 
-Using Sweden's complete population register (7.8 million voters), I predict voting behavior transitions between the 2018 and 2022 municipal elections. Rather than asking "who votes?" in a single election, this research examines **behavioral change**—who starts voting, who stops, and what makes habits stable or fluid.
+> **Important:** All production results are computed in Statistics Sweden’s secure MONA environment. Only aggregated outputs (tables, visuals) are exported.
 
-**Research Questions:**
-1. Where is voting behavior most predictable? (Geographic performance analysis)
-2. Does more training data improve prediction of rare behavioral transitions?
-3. What demographic factors predict stability vs. change in voting habits?
+---
 
-## Contributions
+## Voting Categories (2018 → 2022)
 
-First population-level machine learning study of voting transitions using complete administrative data. Most studies examine single elections; this captures behavioral dynamics across time.
+| Code | Description | Count (approx.) |
+|------|-------------|-----------------|
+| VV   | Voted both years | 5.7M |
+| VN   | Voted in 2018 only | 570k |
+| NV   | Voted in 2022 only | 318k |
+| NN   | Did not vote either year | 680k |
 
-**Methodology** Real-world demonstration of:
-- Handling extreme class imbalance (3% minority class)
-- Large-scale data processing (7.8M observations)
-- Detecting and analyzing geographic model bias
+The classes are highly imbalanced — a central methodological challenge for the project.
+
+---
+
+## Research Questions
+
+### **RQ1 — Methodological: Sampling Strategy & Scaling**
+How different sampling strategies handle severe class imbalance at scale, and how predictive performance changes with training size.
+
+Two settings are evaluated:
+
+- **RQ1a: Method Comparison**  
+  Training sizes: 50k–800k  
+  Methods: Balanced vs stratified  
+  Seeds: 3 per configuration
+
+- **RQ1b: Stratified Scaling**  
+  Training sizes: 1M–4M  
+  Methods: Stratified only  
+  Seeds: 3 per configuration
+
+Balanced sampling is constrained by the smallest class (~210k observations), capping the feasible balanced dataset at ~840k.
+
+---
+
+### **RQ2 — Descriptive: Geographic Predictability**
+How predictable voting-habit transitions are across Sweden’s 290 municipalities, and where geographic clustering appears.
+
+Approach:
+- Use the best-performing model from RQ1  
+- Predict on the test set  
+- Aggregate performance by municipality  
+- Report metrics: balanced accuracy, per-class F1, precision, recall  
+
+A choropleth map highlights spatial patterns in predictability.
+
+---
+
+### **RQ3 — Explanatory: What Drives Predictability?**
+Which features of municipalities—such as outcome entropy, sample size, and covariate patterns—help explain variation in predictability.
+
+Two dimensions are explored:
+
+1. **Task Complexity**
+   - Outcome diversity (entropy)
+   - Sample size
+   - Potential class imbalance
+
+2. **Signal Strength**
+   - Feature–outcome correlations  
+   - Heterogeneity in covariates  
+   - Demographic and economic variation  
+
+Initial results:  
+Higher entropy reduces accuracy; larger test samples improve it. Both effects are statistically significant.
+
+---
+
+
+### Repository Structure
+```
+Predicting-voter-turnout/
+│
+├── data/
+│   ├── alla_kommuner.shp              # Sweden municipal shapefile (for RQ2)
+│   └── synthetic_data_generator.py    # Generate 10k synthetic observations
+│
+├── python_scripts/
+│   │
+│   ├── local_scripts/                 # Local testing on synthetic data
+│   │   ├── data_summary.py            # Generate dataset statistics
+│   │   ├── feature_importance.py      # Feature importance and confusion matrix
+│   │   ├── rq1_analyses.py            # RQ1 results analysis
+│   │   ├── rq2_analyses.py            # RQ2 results analysis
+│   │   ├── rq3_analyses.py            # RQ3 results analysis
+│   │
+│   ├── mona_scripts/                  # Production scripts for MONA
+│   │   ├── config.py                  # Configuration management
+│   │   ├── data_loader.py             # Data loading & preprocessing
+        ├── mona_data_summary.py       # One-time data statistics
+│   │   ├── mona_rq1.py                # RQ1 experiments (12-14 hours runs)
+│   │   ├── mona_rq2.py                # RQ2 
+│   │   ├── mona_rq3.py                # RQ3
+│   │   ├── sampler.py                 # Sampling strategies
+│   │   ├── trainer.py                 # XGBoost training
+│   │   └── utils.py                   # Utility functions
+│   │
+│   └── visualisation_scripts/         # Visualization generation using real results from MONA
+|       ├── rq1.py                     # RQ1 plots & figures
+|       ├── r21.py                     # RQ2 plots & figures
+│       └── rq3.py                     # RQ3 plots & figures
+│
+├── outputs_mona/                       # Results from MONA production runs
+│   ├── tables/                         # CSV results│   │
+│   └── plots/                         # Visualizations
+│       ├── rq1_multi_metric_panel.png
+│       ├── rq1a_comparison.png
+│       ├── rq1b_scaling.png
+│       └── rq2_predictability_map.png
+│
+├── outputs_synthetic/                 # Results from local testing
+│   ├── tables/                        # CSV results (test runs)
+│   ├── plots/                         # Visualizations (test runs)
+│   └── models/                        # Test models 
+│
+├── main_findings.ipynb                         # Jupyter analysis
+│
+├── .gitignore                         # Excludes MONA models, sensitive data
+├── LICENSE
+├── requirements.txt
+└── README.md
+```
+
+Models trained in MONA cannot be exported; all results here are aggregated or synthetic.
+
+---
 
 ## Key Findings
 
-### Performance Patterns
-- **Stable behavior is predictable:** 94% precision for consistent voters (VV)
-- **Transitions are hard:** Only 5.8% precision for new voters (NV), 12.6% for stopped voters (VN)
-- **Critical insight:** Demographics predict *who has habits*, not *who changes their habits*
+See `main_findings.ipynb` for full details.
 
-### Geographic Bias Discovered
-- Model F1 scores vary dramatically: 0.50-0.75 across Sweden's 290 municipalities
-- Northern rural areas: harder to predict (smaller samples, different patterns)
-- Urban southern Sweden: more predictable (larger samples, urban voting dynamics)
-- **Implication:** Model performance reflects real regional differences + data availability issues
-
-### Training Scale Analysis
-- Performance plateaus around 500K-1M training samples
-- Diminishing returns beyond 1M observations
-- **Practical impact:** Don't need the full 7.8M dataset for stable performance
-
-### What Drives Predictions?
-SHAP analysis reveals:
-- **Foreign birth status:** 56% of model importance
-- **Age and income:** Secondary predictors
-- **Education and employment:** Moderate effects
-- **Geographic location:** Captures local political culture
-
-**The puzzle:** These static features predict 2018 behavior well, but fail to predict *changes* by 2022. This suggests behavioral transitions require temporal variables (income changes, life events, residential moves) not captured in baseline demographics.
-
-## Methodology
-
-### The Prediction Challenge
-
-I predict four voting patterns:
-- **VV (81%)**: Voted both years → stable voters
-- **NN (8.4%)**: Voted neither year → stable non-voters  
-- **VN (7%)**: Voted 2018, not 2022 → stopped voting
-- **NV (3.1%)**: Didn't vote 2018, voted 2022 → started voting
-
-### Solution: Balanced Sampling Strategy
-
-**Training approach:**
-- Balanced sampling: equal observations per class
-- Ensures model learns from all patterns, not just majority class
-- Multiple random seeds for robustness
-
-**Testing approach:**
-- Natural class distribution (81%-8%-7%-3%)
-- Reflects real-world prediction scenarios
-- Per-class metrics (precision, recall, F1) instead of just accuracy
-
-### Model Choice: XGBoost
-
-- Native categorical feature support
-- Handles imbalanced data effectively with proper sampling
-- Fast training on large datasets
-- Interpretable via SHAP analysis
-
-### Three Core Experiments
-
-**1. Geographic Analysis**
-- Municipality-level performance mapping (290 municipalities)
-- Choropleth visualizations revealing regional patterns
-- Investigation of urban-rural performance gaps
-
-**2. Training Scale Study**
-- Tested training sizes: 100K, 250K, 500K, 1M, 2M, 4M samples
-- Fixed test set for fair comparison
-- Power law regression to model scaling effects
-
-**3. Feature Importance**
-- Permutation importance for overall rankings
-- SHAP values for individual prediction explanations
-- Analysis of what makes transitions unpredictable
-
-## Technical Implementation
-
-### Workflow Architecture
-
-This project uses a **two-stage pipeline** that leverages the strengths of different tools:
-
-**Stage 1: Data Preparation (Stata)**
-- Raw data processing from Statistics Sweden's administrative registers
-- Variable construction and feature engineering
-- Data quality checks and validation
-- Handling missing values and outliers
-- Export to CSV format for machine learning
-
-**Stage 2: Machine Learning (Python)**
-- Model training and evaluation
-- Feature importance analysis
-- Geographic performance mapping
-- Statistical analysis of results
-
-This separation allows:
-- Using Stata's strengths for administrative data handling
-- Using Python's ML ecosystem for modeling
-- Clear handoff point between data prep and analysis
-- Reproducible workflow across both platforms
-
-### Python Project Structure
-```
-├── data/
-│   ├── sample_data.csv        # Synthetic data (demo only)
-│   └── README.md              # Data documentation
-├── src/
-│   ├── data_loading.py        # Load cleaned CSV data
-│   ├── models.py              # XGBoost model class
-│   ├── evaluation.py          # Metrics, confusion matrices
-│   ├── visualization.py       # Choropleth maps, SHAP plots
-│   ├── config.py              # Hyperparameters, paths
-│   └── pipeline.py            # End-to-end ML pipeline
-├── notebooks/                 # Exploratory analysis
-├── results/                   # Performance metrics & visualizations
-├── tests/                     # Unit tests
-└── requirements.txt           # Python dependencies
-```
-
-**Note:** Stata data cleaning scripts are not included in this repository.
-
-### Machine Learning Engineering
-**Key engineering practices:**
-- Modular, production-ready architecture
-- Type hints and comprehensive docstrings
-- Logging for debugging and monitoring
-- Configuration management (separate from code)
-- Reproducible results (fixed random seeds)
-- Version control for models and experiments
-
-### Statistical Rigor
-- Proper train/test splitting (no data leakage)
-- Stratified sampling by geographic region
-- Multiple evaluation metrics beyond accuracy
-- Statistical testing for scaling effects
-- Per-class performance analysis (not just aggregate)
-
-### Data Pipeline
-- Loads pre-cleaned CSV data from Stata
-- Efficient processing of 7.8M observations
-- Handles Swedish administrative data structure
-- Categorical feature preparation for XGBoost
-- Municipality-level aggregation for geographic analysis
-- Memory-efficient sampling strategies
-
-## Data Access & Privacy
-
-**Important:** This project uses confidential Swedish administrative data accessed through Statistics Sweden's MONA secure remote access system.
-
-### Privacy Measures
-- Data never leaves secure MONA environment
-- All data cleaning and ML analysis conducted on approved secure platform
-- Only aggregated, non-identifiable results published
-- Research approved by Swedish Ethical Review Authority
-- Compliance with GDPR and Swedish data protection laws
-
-### Synthetic Data Provided
-The `data/sample_data.csv` file:
-- Has identical column structure to cleaned real data
-- Contains randomly generated values
-- Allows Python code to run for demonstration
-- **Produces meaningless results** (not representative)
-
-Real analysis uses 7.8M population records with 29 demographic, economic, and geographic variables after Stata preprocessing.
-
-### Data Processing Notes
-**Original data format:** Stata (.dta) files from Swedish administrative registers
-
-**Preprocessing (Stata):**
-- Variable construction from raw registers
-- Merging multiple data sources
-- Quality checks and validation
-- Missing value handling
-- Export to CSV for ML pipeline
-
-**ML Pipeline (Python):**
-- Loads cleaned CSV data
-- Feature encoding for XGBoost
-- Model training and evaluation
-- Results visualization and analysis
-
-## Getting Started
-
-### Prerequisites
-```bash
-# Python environment
-Python 3.8+
-pip install -r requirements.txt
-```
-
-### Run Demo with Synthetic Data
-```bash
-# Load pre-cleaned synthetic data and run ML pipeline
-python src/pipeline.py --data data/sample_data.csv --output results/
-
-# Note: Synthetic data produces random results for demonstration only
-# Real analysis conducted on MONA system with population data
-```
-
-### Results Location
-```
-results/
-├── model_performance/        # Confusion matrices, per-class metrics
-├── geographic_analysis/      # Municipality-level performance maps
-├── feature_importance/       # SHAP values, permutation importance
-└── scaling_analysis/         # Training size experiments
-```
+---
 
 ## Future Directions
 
-### Immediate Next Steps
-Current models use only 2018 baseline demographics. To predict *transitions*, I need temporal change variables:
+### **Model Extensions**
+- Temporal features (income, employment, mobility)
+- Local economic and demographic change
+- Event-based features (family transitions, moves)
 
-**Planned additions:**
-- Income changes (2019-2022)
-- Employment status transitions
-- Residential moves (geographic mobility)
-- Life events (marriage, divorce, children)
-- Neighborhood changes (gentrification, demographic shifts)
+### **Explanatory Modeling**
+A structured decomposition will assess:
+- **Task complexity:** outcome entropy, heterogeneity, nonlinearities  
+- **Signal strength:** feature sufficiency and alignment  
 
-**Hypothesis:** Behavioral transitions require capturing *change*, not just static characteristics.
+Both dimensions are needed to understand municipal-level variation.
 
-### Model Improvements
-- Address geographic sampling bias (northern municipalities)
-- Ensemble methods combining XGBoost with other algorithms
-- Deep learning for complex feature interactions
+---
 
-### Research Extensions
-- Causal inference: Do specific interventions change voting?
-- Subgroup analysis: Different predictors for different demographics?
-- Policy implications: Where are voter mobilization efforts most effective?
+## About the Research
 
-## About This Research
-
-This project is Chapter 3 of my PhD dissertation on political participation in Sweden.
+This work forms a chapter of my PhD dissertation on political participation in Sweden.
 
 **Author:** Chi Nguyen  
-**Institution:** Economics Department, University of Gothenburg  
-**Contact:** chi.nguyen@economics.gu.se  
+**Department:** Economics, University of Gothenburg  
+**Email:** chi.nguyen@economics.gu.se  
+**Status:** Early-stage research  
 
-**Status:** Early-stage dissertation research (2024-2025)
+---
 
-I'm actively developing this project and welcome discussions about:
-- Methodology and technical approaches
-- Extensions and applications to other contexts
-- Collaboration opportunities
-- Industry applications of similar techniques
-
-If you find this research interesting or want to discuss the technical approach, please reach out!
-
-**Note:** This is academic research using sensitive administrative data. All results are preliminary and subject to revision. The code demonstrates technical implementation; substantive findings are still under development.
+*This repository contains only non-sensitive code and exported aggregated outputs. All confidential data work is performed inside MONA.*
