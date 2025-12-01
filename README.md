@@ -134,7 +134,7 @@ Predicting-voter-turnout/
 │
 ├── main_findings.ipynb                         # Jupyter analysis
 │
-├── .gitignore                         # Excludes MONA models, sensitive data
+├── .gitignore                         # Excludes MONA output, synthetic data, some files
 ├── LICENSE
 ├── requirements.txt
 └── README.md
