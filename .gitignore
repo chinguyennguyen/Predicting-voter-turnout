@@ -2,18 +2,20 @@
 # Project-specific ignores
 #######################################
 
-# Ignore contents of output folders, but keep the folders
-outputs_mona/**
-!outputs_mona/.gitkeep
+# Ignore everything in outputs_synthetic and subfolders
+outputs_synthetic/**
 
-# Ignore synthetic data file
-# Ignore everything under outputs_synthetic
-outputs_synthetic/*
-# But keep the .gitkeep files
+# Allow these directories to exist
+!outputs_synthetic/
+!outputs_synthetic/tables/
+!outputs_synthetic/models/
+!outputs_synthetic/plots/
+
+# Keep only .gitkeep files
 !outputs_synthetic/.gitkeep
 !outputs_synthetic/tables/.gitkeep
-!outputs_synthetic/plots/.gitkeep
 !outputs_synthetic/models/.gitkeep
+!outputs_synthetic/plots/.gitkeep
 
 
 #######################################
