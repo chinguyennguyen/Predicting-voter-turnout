@@ -92,52 +92,63 @@ Higher entropy reduces accuracy; larger test samples improve it. Both effects ar
 ```
 Predicting-voter-turnout/
 │
+├── .gitignore
+│
 ├── data/
-│   ├── alla_kommuner.shp              # Sweden municipal shapefile (for RQ2)
-│   ├── municipality_code.csv          # Matching municipal code to name
-│   ├── README.md                      # README
-│   └── synthetic_data_generator.py    # Generate 10k synthetic observations
+│   ├── alla_kommuner/                     # Sweden municipal shapefile folder (for RQ2)
+│   │   ├── alla_kommuner.dbf
+│   │   ├── alla_kommuner.prj
+│   │   ├── alla_kommuner.sbn
+│   │   ├── alla_kommuner.sbx
+│   │   ├── alla_kommuner.shp
+│   │   ├── alla_kommuner.shp.xml
+│   │   ├── alla_kommuner.shx
+│   │   └── desktop.ini
+│   ├── municipality_code.csv              # Matching municipal code to name
+│   ├── README_data.md                     # Documentation for data sources and formats
+│   └── synthetic_data_generator.py        # Generate 40k synthetic observations
+│
+├── LICENSE
+│
+├── main_findings.ipynb                    # Jupyter analysis combining RQ1–RQ3 outputs
+│
+├── outputs_mona/                          # Results from MONA production runs
+│
+├── outputs_synthetic/                     # Results from local testing (using synthetic data)
+│   ├── models/                            # Saved local test models
+│   ├── plots/                             # Visualizations from test runs
+│   └── tables/                            # CSV outputs from test runs
 │
 ├── python_scripts/
-│   ├── local_scripts/                 # Local testing on synthetic data
-│   │   ├── data_summary.py            # Generate dataset statistics
-│   │   ├── feature_importance.py      # Feature importance and confusion matrix
-│   │   ├── rq1_analyses.py            # RQ1 results analysis
-│   │   ├── rq2_analyses.py            # RQ2 results analysis
-│   │   └── rq3_analyses.py            # RQ3 results analysis
+│   ├── local_scripts/                     # Local testing on synthetic data
+│   │   ├── data_summary.py                # Generate dataset statistics
+│   │   ├── feature_importance.py          # Feature importance + confusion matrix
+│   │   ├── rq1_analyses.py                # RQ1 results analysis
+│   │   ├── rq2_analyses.py                # RQ2 results analysis
+│   │   ├── rq3_analyses.py                # RQ3 results analysis
 │   │
-│   ├── mona_scripts/                  # Production scripts for MONA
-│   │   ├── config.py                  # Configuration management
-│   │   ├── data_loader.py             # Data loading & preprocessing
-|   |   ├── mona_data_summary.py       # One-time data statistics
-|   |   ├── mona_feature_importance.py # Feature importance and confusion matrix
-│   │   ├── mona_rq1.py                # RQ1 experiments (12-14 hours to run)
-│   │   ├── mona_rq2.py                # RQ2 
-│   │   ├── mona_rq3.py                # RQ3
-│   │   ├── sampler.py                 # Sampling strategies
-│   │   ├── trainer.py                 # XGBoost training
-│   │   └── utils.py                   # Utility functions
+│   ├── mona_scripts/                      # Production scripts for MONA
+│   │   ├── config.py                      # Configuration management
+│   │   ├── data_loader.py                 # Data loading & preprocessing
+│   │   ├── mona_data_summary.py           # One-time data statistics
+│   │   ├── mona_feature_importance.py     # Feature importance and confusion matrix
+│   │   ├── mona_rq1.py                    # RQ1 experiments (12–14 hours to run)
+│   │   ├── mona_rq2.py                    # RQ2 experiments
+│   │   ├── mona_rq3.py                    # RQ3 experiments
+│   │   ├── sampler.py                     # Sampling strategies
+│   │   ├── trainer.py                     # XGBoost training pipeline
+│   │   └── utils.py                       # Utility functions
 │   │
-│   └── visualisation_scripts/         # Visualization generation using real results from MONA
-|       ├── rq1.py                     # RQ1 plots & figures
-|       ├── r21.py                     # RQ2 plots & figures
-│       └── rq3.py                     # RQ3 plots & figures
+│   ├── README_scripts.md                  # Documentation for all scripts (local + MONA)
+│   │
+│   └── visualisation_scripts/             # Visualization generation using MONA outputs
+│       ├── rq1.py                         # RQ1 plots & figures
+│       ├── rq2.py                         # RQ2 plots & figures
+│       └── rq3.py                         # RQ3 plots & figures
 │
-├── outputs_mona/                       # Results from MONA production runs
-│   ├── tables/                         # CSV results
-│   └── plots/                          # Visualizations
+├── README.md                              # Project overview and usage instructions
 │
-├── outputs_synthetic/                 # Results from local testing
-│   ├── tables/                        # CSV results (test runs)
-│   ├── plots/                         # Visualizations (test runs)
-│   └── models/                        # Test models 
-│
-├── main_findings.ipynb                         # Jupyter analysis
-│
-├── .gitignore                         # Excludes MONA outputs, synthetic data, some files
-├── LICENSE
-├── requirements.txt
-└── README.md
+└── requirements.txt  
 ```
 
 Models trained in MONA cannot be exported; all results here are aggregated or synthetic.
